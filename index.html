@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>집갈레요</title>
+</head>
+<body>
+    <h1>앞으로 집 가기까지 남은 시간</h1>
+    <hr>
+    
+    <div>
+        <h5>요일 선택</h5>
+        <button id="su">휴일일 경우</button>
+		<button id="mo">7교시일 경우</button>
+		<button id="ws">6교시일 경우</button>
+    </div>
+    
+    <main>
+
+        <div>
+            <h2 id="ch-time">선택된 시간 : </h2>
+            <div>
+            <h2 id="time">남은 시간 : </h2>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+
+<script>
+const btn_su = document.querySelector("#su");
+const btn_mo = document.querySelector("#mo");
+const btn_ws = document.querySelector("#ws");
+
+const timer = document.querySelector("#time");
+const chTime = document.querySelector("#ch-time");
+
+let targetDate = null;
+
+// 시작 시간 (08:40)
+const START_HOUR = 8;
+const START_MIN = 40;
+
+// 초 → 시/분/초
+function formatTime(sec) {
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    const s = sec % 60;
+    return `남은 시간 : ${h}시간 ${m}분 ${s}초`;
+}
+
+function init_timer(day) {
+
+    let totalMinutes = 0;
+
+    switch (day) {
+        case 0:
+        case 6:
+            targetDate = null;
+            chTime.innerText = "선택된 시간 : 와! 오늘은 휴일이에요 !";
+            timer.innerText = "";
+            return;
+
+        case 1:
+        case 2:
+        case 4:
+        case 5:
+            totalMinutes = 470;
+            break;
+
+        case 3:
+            totalMinutes = 430;
+            break;
+    }
+
+    // 🔥 오늘 08:40 기준 시간 생성
+    const base = new Date();
+    base.setHours(START_HOUR, START_MIN, 0, 0);
+
+    // 🔥 하교 시간 = 시작 + 총 수업시간
+    targetDate = new Date(base.getTime() + totalMinutes * 60 * 1000);
+
+    chTime.innerText = `선택된 시간 : ${targetDate.getHours()}시 ${targetDate.getMinutes()}분`;
+
+    updateRemainingTime();
+}
+
+// 남은 시간 계산
+function updateRemainingTime() {
+    if (!targetDate) return;
+
+    const now = new Date();
+    const diff = Math.floor((targetDate - now) / 1000);
+
+    if (diff <= 0) {
+        timer.innerText = "이미 집 갈 시간이에요 😆";
+    } else {
+        timer.innerText = formatTime(diff);
+    }
+}
+
+// 이벤트
+btn_su.addEventListener("click", () => init_timer(0));
+btn_mo.addEventListener("click", () => init_timer(1));
+btn_ws.addEventListener("click", () => init_timer(3));
+
+
+// 1초마다 갱신
+setInterval(updateRemainingTime, 1000);
+</script>
+</html>
