@@ -6,3 +6,6 @@
 
 ## 사용법
 해강고등학교 기준임. 기타는 알아서 할 것.
+
+## 사이트 주
+https://bucolic-sunflower-873fcc.netlify.app/
